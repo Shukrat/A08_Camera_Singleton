@@ -1,5 +1,4 @@
 #pragma once
-#include "Camera.h"
 #include <glew.h>
 #include <vector>
 #include <glm\glm.hpp>
@@ -26,6 +25,6 @@ class Shape
 		vector<glm::vec3> vertices;
 	
 		//Methods
-		void draw(vec3 currentPosition, vec3 currentScale, vec3 rotationAxis, float rotationAngle, vec3 color, Camera* cam);
+		void draw(vec3 currentPosition, vec3 currentScale, vec3 rotationAxis, float rotationAngle, vec3 color, glm::mat4 &perspectLookAt);
 };
 

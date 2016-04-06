@@ -49,10 +49,8 @@ Shape::Shape(GLuint _programIndex, vector<glm::vec3> vertices, vector<unsigned i
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &(indices[0]), GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (void*)(sizeof(float)*3));
 
 	glEnableVertexAttribArray(0);
-	//glEnableVertexAttribArray(1);
 
 	matrixLoc = glGetUniformLocation(programIndex, "worldMatrix");
 	uniformColorLocation = glGetUniformLocation(programIndex, "color");
@@ -63,9 +61,8 @@ Shape::~Shape(){
 	glDeleteBuffers(1, &vertBuff);
 }
 
-void Shape::draw(vec3 currentPosition, vec3 currentScale, vec3 rotationAxis, float rotationAmt, vec3 color, Camera* cam) {
-	mat4 worldMatrix = perspective(45.f, 1.f, .01f, 1000.f) * lookAt(cam->position, cam->position+cam->getLookAt(), cam->getUp()) * translate(currentPosition) * scale(currentScale) * rotate(rotationAmt, rotationAxis);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+void Shape::draw(vec3 currentPosition, vec3 currentScale, vec3 rotationAxis, float rotationAmt, vec3 color, glm::mat4 &perspectLookAt) {
+	mat4 worldMatrix = perspectLookAt * translate(currentPosition) * scale(currentScale) * rotate(rotationAmt, rotationAxis);
 	glProgramUniformMatrix4fv(
 		programIndex,
 		matrixLoc, 
@@ -75,8 +72,5 @@ void Shape::draw(vec3 currentPosition, vec3 currentScale, vec3 rotationAxis, flo
 	glProgramUniform4f(programIndex, uniformColorLocation, color.r, color.g, color.b, 1);
 	glBindVertexArray(vertArr);
 
-	//numVerts = vertices.size();
-
-	//glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 	glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "Camera.h"
 #include <glm\glm.hpp>
 #include <glm\gtx\transform.hpp>
 #include <glew.h>
@@ -24,7 +25,6 @@ public:
 	static bool mouseButtonHeld;
 
 private:
-	//static void makeTriangle();
 	static float getFrameTime();
 
 	static vec2 cursorPos;

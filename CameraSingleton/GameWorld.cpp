@@ -2,7 +2,6 @@
 #include "ShaderHelper.h"
 #include "Shape.h"
 #include "ModelLoader.h"
-#include "Camera.h"
 #include <iostream>
 
 using namespace std;
@@ -41,6 +40,8 @@ GameObject* modelManipulator;
 
 // Camera
 Camera* cam;
+//MatrixCalc* matrixCalc;
+glm::mat4 perspectLookAt;
 
 int objectArrayPos = 0;
 
@@ -61,8 +62,6 @@ bool GameWorld::init() {
 		cout << "Error loading shader program" << endl;
 	}
 
-	//helper.setShaderColor(program, "color", 1.0f, 1.0f, 1.0f);
-
 	glUseProgram(program);
 
 	// Put initially rendered stuff here, if you want
@@ -72,9 +71,9 @@ bool GameWorld::init() {
 	std::vector<glm::vec3> normals; // Won't be used at the moment.
 	bool res = modelLoader.loadObject("cube2.obj", vertices, uvs, normals);
 
-	cam = new Camera();
+    cam = Camera::GetInstance();
 	model = new Shape(program, vertices, uvs);
-	modelManipulator = new GameObject(model, vec3(0, 0, -10), 0.5f, vec3(0, 0, 0), 1.0f, vec3(0, 1, 1), 1, vec3(.1, 0.1, 0.5), true, cam);
+	modelManipulator = new GameObject(model, vec3(0, 0, -10), 0.5f, vec3(0, 0, 0), 1.0f, vec3(0, 1, 1), 1, vec3(.1, 0.1, 0.5), true);
 
 	// ---
 	return true;
@@ -84,7 +83,8 @@ bool GameWorld::init() {
 void GameWorld::update() {
 	float dt = getFrameTime();
 	// Update all the things here!
-	modelManipulator->update(dt);
+    perspectLookAt = cam->getView();
+	modelManipulator->update(dt, perspectLookAt);
 	glfwSetCursorPos(glfwGetCurrentContext(), (800 / 2), (800 / 2));
 	// ---
 }
@@ -142,30 +142,6 @@ vec2 GameWorld::getCursorPos(GLFWwindow* windowPtr) {
 
 	return cursorPosition;
 }
-
-//void GameWorld::makeTriangle() {
-//	for (int i = 0; i < 101; i++) {
-//		GLfloat vertPostns[triIndividVerts] = {
-//			0.0f, 0.25f, 0.7f, 0.7f, 0.1f,
-//			-0.25f, 0.0f, 0.1f, 0.7f, 0.7f,
-//			0.25f, 0.0f, 0.7f, 0.1f, 0.7f
-//		};
-//		triangle = new Shape(vertPostns, triVerts, program);
-//		shapePtrColl.push_back(triangle);
-//		float zAxisNeg = 0;
-//		if (rand() % 2 + 1 == 1) { zAxisNeg = 1; }
-//		else { zAxisNeg = -1; }
-//		gameObjPtrColl.push_back(new GameObject(shapePtrColl[i],
-//			vec3(cursorPos.x, cursorPos.y, 0),  // position
-//			0.1f,		         // mass 
-//			vec3(0, 0, 0),		 // velocity
-//			0.5f,				 // scale
-//			vec3(0, 0, zAxisNeg),		 // rotation axis
-//			((rand() % 200 - 100) * .01),	// rotation amount
-//			vec3(1, 1, 1),       // color
-//			false));			 // active?
-//	}
-//}
 
 float GameWorld::getFrameTime() {
 	lastFrameTime = glfwGetTime();

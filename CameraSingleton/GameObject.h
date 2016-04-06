@@ -2,17 +2,16 @@
 #include "Shape.h"
 #include <glm\glm.hpp>
 using namespace glm;
-class Camera;
 
 class GameObject
 {
 public:
-	GameObject(Shape* shapePtr, vec3 position, float mass, vec3 velocity, float scale, vec3 rotationAxis, float rotationAmt, vec3 color, bool a, Camera* cam);
+	GameObject(Shape* shapePtr, vec3 position, float mass, vec3 velocity, float scale, vec3 rotationAxis, float rotationAmt, vec3 color, bool a);
 	GameObject();
 	~GameObject();
 
 	float getScale();
-	void update(float dt);
+	void update(float dt, glm::mat4 &perspectLookAt);
 	void draw();
 	void addForce(vec3 force);
 	
@@ -34,7 +33,6 @@ public:
 	bool atRest;
 
 private:
-	Camera* cam;
 	Shape* shapePtr;
 	vec3 position;
 	float mass;
@@ -44,5 +42,6 @@ private:
 	float rotationAmt;
 	vec3 force;
 	vec3 color;
+	mat4 perspectLookAt;
 };
 

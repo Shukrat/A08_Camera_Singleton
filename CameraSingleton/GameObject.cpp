@@ -1,5 +1,4 @@
 #include "GameObject.h"
-#include "Camera.h"
 
 
 GameObject::GameObject()
@@ -11,7 +10,7 @@ GameObject::~GameObject()
 {
 }
 
-GameObject::GameObject(Shape* shapePtr, vec3 position, float mass, vec3 velocity, float scale, vec3 rotationAxis, float rotationAmt, vec3 color, bool a, Camera* cam) {
+GameObject::GameObject(Shape* shapePtr, vec3 position, float mass, vec3 velocity, float scale, vec3 rotationAxis, float rotationAmt, vec3 color, bool a) {
 	this->shapePtr     = shapePtr;
 	this->position     = position;
 	this->mass	       = mass;
@@ -23,16 +22,17 @@ GameObject::GameObject(Shape* shapePtr, vec3 position, float mass, vec3 velocity
 	this->active       = a;
 	this->atRest       = false;
 	this->force        = vec3(0, 0, 0);
-	this->cam		   = cam;
+	this->perspectLookAt = mat4();
 }
 
-void GameObject::update(float dt) {
+void GameObject::update(float dt, glm::mat4 &perspectLookAt) {
 	rotationAmt += dt;
+	this->perspectLookAt = perspectLookAt;
 }
 
 void GameObject::draw() {
 	if (active) {
-		shapePtr->draw(position, vec3(scale, scale, scale), rotationAxis, rotationAmt, color, cam);
+		shapePtr->draw(position, vec3(scale, scale, scale), rotationAxis, rotationAmt, color, perspectLookAt);
 	}
 }
 
